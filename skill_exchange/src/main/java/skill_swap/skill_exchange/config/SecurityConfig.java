@@ -36,7 +36,6 @@ public class SecurityConfig {
                 ))
                 .authorizeHttpRequests(auth -> auth
 
-                        // Add it HERE
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -45,7 +44,11 @@ public class SecurityConfig {
                                 "/api/auth/register"
                         ).permitAll()
 
-                        // Everything else requires login
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.OPTIONS,
+                                "/**"
+                        ).permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
