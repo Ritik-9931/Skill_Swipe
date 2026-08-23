@@ -1,0 +1,7 @@
+package skill_swap.skill_exchange.exception;
+
+public class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String message) {
+        super(message);
+    }
+}
