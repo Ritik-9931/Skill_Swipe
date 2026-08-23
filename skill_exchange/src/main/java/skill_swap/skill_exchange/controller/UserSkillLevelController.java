@@ -11,7 +11,10 @@ import skill_swap.skill_exchange.service.serviceImpl.UserSkillLevelServiceImpl;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://skill-swipe-eight.vercel.app/"
+})
 @RequestMapping("/api/userSkillLevels")
 @SecurityRequirement(name = "bearerAuth")
 public class UserSkillLevelController {

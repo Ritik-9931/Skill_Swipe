@@ -11,7 +11,10 @@ import skill_swap.skill_exchange.dto.response.RegisterResponse;
 import skill_swap.skill_exchange.service.serviceImpl.UserServiceImpl;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://skill-swipe-eight.vercel.app/"
+})
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired

@@ -40,7 +40,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserSkillLevel> userSkillLevels;
-
-    @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SessionRequest> sessionRequests;
 }
