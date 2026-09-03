@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-
 import { getUser } from "../redux/slices/userSlice";
 
 import {
-  addUserSkillLevel,
   getAllSkillLevel,
   getAllSkills,
 } from "../redux/slices/skillSlice";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // =========================
   // REDUX STATE
@@ -22,18 +21,9 @@ const Home = () => {
 
   const { loading } = useSelector((state) => state.user);
 
-  const { skills = [], skillLevelLoading } = useSelector(
+  const { skills = [] } = useSelector(
     (state) => state.skill,
   );
-
-  // =========================
-  // LOCAL STATE
-  // =========================
-  const [skillLevelData, setSkillLevelData] = useState({
-    userId: "",
-    skillId: "",
-    level: "",
-  });
 
   // =========================
   // LOAD DATA
@@ -44,11 +34,6 @@ const Home = () => {
     dispatch(getUser(user.id));
     dispatch(getAllSkills());
     dispatch(getAllSkillLevel(user.id));
-
-    setSkillLevelData((prev) => ({
-      ...prev,
-      userId: user.id,
-    }));
   }, [dispatch, user?.id]);
 
   // =========================
@@ -88,61 +73,6 @@ const Home = () => {
     };
 
     return styles[level] || "bg-gray-50 text-gray-600 border-gray-100";
-  };
-
-  // =========================
-  // HANDLE INPUT
-  // =========================
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setSkillLevelData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // =========================
-  // ADD SKILL
-  // =========================
-  const handleAdd = async (e) => {
-    e.preventDefault();
-
-    if (
-      !skillLevelData.userId ||
-      !skillLevelData.skillId ||
-      !skillLevelData.level
-    ) {
-      toast.warning("Please select a skill and skill level.");
-      return;
-    }
-
-    try {
-      const result = await dispatch(
-        addUserSkillLevel({
-          userId: Number(skillLevelData.userId),
-          skillId: Number(skillLevelData.skillId),
-          level: skillLevelData.level,
-        }),
-      ).unwrap();
-
-      toast.success(result?.message || "Skill added successfully!");
-
-      setSkillLevelData((prev) => ({
-        ...prev,
-        skillId: "",
-        level: "",
-      }));
-
-      dispatch(getAllSkillLevel(user.id));
-      dispatch(getUser(user.id));
-    } catch (err) {
-      console.error("Add skill error:", err);
-
-      toast.error(
-        typeof err === "string" ? err : err?.message || "Failed to add skill",
-      );
-    }
   };
 
   // =========================
@@ -369,92 +299,13 @@ const Home = () => {
               )}
             </div>
 
-            {/* =================================================
-                ADD SKILL
-            ================================================= */}
-            <div className="mt-7 rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50/50 border border-blue-100 p-5">
-              <div className="mb-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center">
-                    <span>➕</span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-900">Add a skill</h3>
-
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      Tell the community what you can teach.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Skill */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
-                    Skill
-                  </label>
-
-                  <select
-                    name="skillId"
-                    value={skillLevelData.skillId}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                  >
-                    <option value="">Choose a skill</option>
-
-                    {skills.map((skill) => (
-                      <option key={skill.id} value={skill.id}>
-                        {skill.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Level */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
-                    Your level
-                  </label>
-
-                  <select
-                    name="level"
-                    value={skillLevelData.level}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-800 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                  >
-                    <option value="">Choose your level</option>
-
-                    <option value="1">Beginner</option>
-
-                    <option value="2">Intermediate</option>
-
-                    <option value="3">Advanced</option>
-
-                    <option value="4">Master</option>
-
-                    <option value="5">Advanced Master</option>
-                  </select>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleAdd}
-                disabled={skillLevelLoading}
-                className="mt-5 w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-100 transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-              >
-                {skillLevelLoading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Adding skill...
-                  </span>
-                ) : (
-                  "Add Skill"
-                )}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={()=>navigate("/home/skills")}
+              className="mt-5 w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-100 transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            >
+              Add Skill
+            </button>
           </section>
 
           {/* ===================================================

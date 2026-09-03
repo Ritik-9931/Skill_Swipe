@@ -44,6 +44,14 @@ public class SecurityConfig {
                                 "/api/auth/register"
                         ).permitAll()
 
+                        .requestMatchers("/api/users/**").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers("/api/skills/**").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers("/api/userSkillLevels/**").hasAnyRole("USER", "ADMIN")
+
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         .requestMatchers(
                                 org.springframework.http.HttpMethod.OPTIONS,
                                 "/**"

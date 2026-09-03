@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
             throw new InvalidCredentialsException("Invalid email or password");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
 
         RegisterResponse registerResponse = new RegisterResponse();
 
